@@ -1,20 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import transactionsData from '../data/transactions.json';
+import React, { useState, useEffect } from 'react';
 
-function TransactionsList() {
-    const [transactions, setTransactions] = useState([]);
-    const [loading, setLoading] = useState(true);
+function TransactionsList({ transactions }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(25);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setTransactions(transactionsData);
-            setLoading(false);
-        }, 300);
-        
-        return () => clearTimeout(timer);
-    }, []);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         window.scrollTo({
@@ -91,11 +81,33 @@ function TransactionsList() {
         }).format(date);
     };
 
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const getTransactionTypeLabel = (type) => { // вынести
+        switch(type) {
+            case 'autoUp': return 'Автоподнятие';
+            case 'viewing': return 'Просмотр';
+            case 'stick': return 'Закрепление';
+            case 'replenishing': return 'Пополнение';
+            case 'commission': return 'Комиссия';
+            default: return type;
+        }
+    };
+
     const getTransactionIcon = (type) => {
         switch(type) {
             case 'autoUp':
                 return (
-                    <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2">
+                    <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 flex-shrink-0">
                         <svg className="h-5 w-5 text-blue-600 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
                         </svg>
@@ -103,7 +115,7 @@ function TransactionsList() {
                 );
             case 'viewing':
                 return (
-                    <div className="rounded-full bg-purple-100 dark:bg-purple-900 p-2">
+                    <div className="rounded-full bg-purple-100 dark:bg-purple-900 p-2 flex-shrink-0">
                         <svg className="h-5 w-5 text-purple-600 dark:text-purple-300" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                             <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
@@ -112,7 +124,7 @@ function TransactionsList() {
                 );
             case 'stick':
                 return (
-                    <div className="rounded-full bg-yellow-100 dark:bg-yellow-900 p-2">
+                    <div className="rounded-full bg-yellow-100 dark:bg-yellow-900 p-2 flex-shrink-0">
                         <svg className="h-5 w-5 text-yellow-600 dark:text-yellow-300" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clipRule="evenodd" />
                         </svg>
@@ -120,7 +132,7 @@ function TransactionsList() {
                 );
             case 'deposit':
                 return (
-                    <div className="rounded-full bg-green-100 dark:bg-green-900 p-2">
+                    <div className="rounded-full bg-green-100 dark:bg-green-900 p-2 flex-shrink-0">
                         <svg className="h-5 w-5 text-green-600 dark:text-green-300" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
                             <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
@@ -129,13 +141,95 @@ function TransactionsList() {
                 );
             default:
                 return (
-                    <div className="rounded-full bg-gray-100 dark:bg-gray-700 p-2">
+                    <div className="rounded-full bg-gray-100 dark:bg-gray-700 p-2 flex-shrink-0">
                         <svg className="h-5 w-5 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
                         </svg>
                     </div>
                 );
         }
+    };
+
+    const showTransactionDetails = (transaction) => {
+        setSelectedTransaction(transaction);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const TransactionModal = () => { // вынести
+        if (!selectedTransaction || !isModalOpen) return null;
+        
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-auto">
+                    <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                            Детали транзакции
+                        </h3>
+                        <button
+                            onClick={closeModal}
+                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div className="p-5">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center">
+                                {getTransactionIcon(selectedTransaction.transactionType)}
+                                <span className="ml-3 font-medium text-gray-900 dark:text-white">
+                                    {getTransactionTypeLabel(selectedTransaction.transactionType)}
+                                </span>
+                            </div>
+                            <div className={`font-medium ${selectedTransaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                                {formatAmount(selectedTransaction.sum)}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Описание</p>
+                                <p className="text-gray-800 dark:text-gray-200">{selectedTransaction.description}</p>
+                            </div>
+                            
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">ID транзакции</p>
+                                <p className="text-gray-800 dark:text-gray-200">{selectedTransaction.id}</p>
+                            </div>
+                            
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Дата и время</p>
+                                <p className="text-gray-800 dark:text-gray-200">{formatDateTime(selectedTransaction.date)}</p>
+                            </div>
+                            
+                            {selectedTransaction.details && (
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Дополнительная информация</p>
+                                    <pre className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{
+                                        JSON.stringify(selectedTransaction.details, null, 2)
+                                    }</pre>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    
+                    <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                        <button
+                            onClick={closeModal}
+                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md text-gray-800 dark:text-gray-200"
+                        >
+                            Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     const Pagination = () => {
@@ -199,61 +293,53 @@ function TransactionsList() {
         );
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-32">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
-
     return (
-        <div className="space-y-6">
-            {transactions.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    <p>Транзакции не найдены</p>
-                </div>
-            ) : (
-                <>
-                    {sortedDays.map(day => (
-                        <div key={day} className="space-y-2">
-                            <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-2">
-                                {formatDayHeader(groupedTransactions[day].date)}
-                            </h3>
-                            
-                            <div className="space-y-2">
-                                {groupedTransactions[day].items.map(transaction => (
-                                    <div 
-                                        key={transaction.id} 
-                                        className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between"
-                                    >
-                                        <div className="flex items-center space-x-4">
-                                            {getTransactionIcon(transaction.transactionType)}
-                                            <div>
-                                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                    {transaction.description}
-                                                </div>
-                                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {new Date(transaction.date).toLocaleTimeString('ru-RU', { 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </div>
-                                            </div>
+        <>
+            <div>
+                {sortedDays.map(day => (
+                    <div key={day} className="space-y-2">
+                        <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-1 mt-3">
+                            {formatDayHeader(groupedTransactions[day].date)}
+                        </h3>
+                        
+                        <div className="space-y-2">
+                        {groupedTransactions[day].items.map(transaction => (
+                            <div 
+                                key={transaction.id} 
+                                className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-650 transition-colors"
+                                onClick={() => showTransactionDetails(transaction)}
+                            >
+                                <div className="flex items-center space-x-3 min-w-0 flex-1">
+                                    {getTransactionIcon(transaction.transactionType)}
+                                    <div className="min-w-0 flex-1">
+                                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                            {transaction.description}
                                         </div>
-                                        <div className={`font-medium ${transaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
-                                            {formatAmount(transaction.sum)}
+                                        <div className="flex text-xs text-gray-500 dark:text-gray-400">
+                                            <span>{new Date(transaction.date).toLocaleTimeString('ru-RU', { 
+                                                hour: '2-digit', 
+                                                minute: '2-digit' 
+                                            })}</span>
+                                            <span className="hidden md:inline-block ml-2">
+                                                · ID: {transaction.id.substring(0, 8)}...
+                                            </span>
                                         </div>
                                     </div>
-                                ))}
+                                </div>
+                                <div className={`font-medium whitespace-nowrap ml-2 ${transaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                                    {formatAmount(transaction.sum)}
+                                </div>
                             </div>
+                        ))}
                         </div>
-                    ))}
+                    </div>
+                ))}
 
-                    <Pagination />
-                </>
-            )}
-        </div>
+                <Pagination />
+            </div>
+            
+            <TransactionModal />
+        </>
     );
 }
 
