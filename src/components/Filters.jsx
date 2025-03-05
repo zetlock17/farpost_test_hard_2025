@@ -81,7 +81,7 @@ function Filters({ transactions, onFilterChange }) {
                                 type="date" 
                                 value={dateRange.from} 
                                 onChange={e => setDateRange({...dateRange, from: e.target.value})}
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                className="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                             />
                         </div>
                         <div>
@@ -90,7 +90,7 @@ function Filters({ transactions, onFilterChange }) {
                                 type="date" 
                                 value={dateRange.to} 
                                 onChange={e => setDateRange({...dateRange, to: e.target.value})}
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                className="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                             />
                         </div>
                     </div>
@@ -125,8 +125,8 @@ function Filters({ transactions, onFilterChange }) {
                                 value={amountRange.min}
                                 step={1000}
                                 onChange={e => setAmountRange({...amountRange, min: e.target.value})}
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                                placeholder="Минимальная сумма"
+                                className="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                placeholder="Минимум"
                             />
                         </div>
                         <div>
@@ -136,8 +136,8 @@ function Filters({ transactions, onFilterChange }) {
                                 value={amountRange.max} 
                                 step={1000}
                                 onChange={e => setAmountRange({...amountRange, max: e.target.value})}
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                                placeholder="Максимальная сумма"
+                                className="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                placeholder="Максимум"
                             />
                         </div>
                     </div>

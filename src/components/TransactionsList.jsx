@@ -232,6 +232,97 @@ function TransactionsList({ transactions }) {
         );
     };
 
+    const CompactPagination = () => {
+        const [inputPage, setInputPage] = useState(currentPage.toString());
+        const [isEditing, setIsEditing] = useState(false);
+        
+        if (totalPages <= 1) return null;
+        
+        const handleInputChange = (e) => {
+            setInputPage(e.target.value.replace(/[^0-9]/g, ''));
+        };
+        
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const pageNum = parseInt(inputPage, 10);
+            if (pageNum >= 1 && pageNum <= totalPages) {
+                goToPage(pageNum);
+            } else {
+                setInputPage(currentPage.toString());
+            }
+            setIsEditing(false);
+        };
+        
+        const handleBlur = () => {
+            handleSubmit({ preventDefault: () => {} });
+        };
+        
+        const handleClick = () => {
+            setIsEditing(true);
+            setTimeout(() => {
+                document.getElementById('page-input')?.focus();
+                document.getElementById('page-input')?.select();
+            }, 0);
+        };
+        
+        return (
+            <div className="flex items-center text-sm">
+                <span className="text-gray-500 dark:text-gray-400 mr-2">
+                    {isEditing ? (
+                        <form onSubmit={handleSubmit} className="inline">
+                            <input
+                                id="page-input"
+                                type="text"
+                                value={inputPage}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                className="w-10 text-center bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-sm"
+                                autoFocus
+                            />
+                        </form>
+                    ) : (
+                        <span 
+                            onClick={handleClick}
+                            className="cursor-pointer hover:text-blue-500 dark:hover:text-blue-400"
+                            title="Нажмите, чтобы ввести номер страницы"
+                        >
+                            {currentPage}
+                        </span>
+                    )}
+                    {" из "} {totalPages}
+                </span>
+                <div className="flex space-x-1">
+                    <button
+                        onClick={goToPreviousPage}
+                        disabled={currentPage === 1}
+                        className={`p-1 rounded-md ${
+                            currentPage === 1
+                                ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                : 'text-gray-600 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700'
+                        }`}
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        onClick={goToNextPage}
+                        disabled={currentPage === totalPages}
+                        className={`p-1 rounded-md ${
+                            currentPage === totalPages
+                                ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                : 'text-gray-600 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700'
+                        }`}
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
     const Pagination = () => {
         if (totalPages <= 1) return null;
 
@@ -295,48 +386,58 @@ function TransactionsList({ transactions }) {
 
     return (
         <>
-            <div>
-                {sortedDays.map(day => (
-                    <div key={day} className="space-y-2">
-                        <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-1 mt-3">
-                            {formatDayHeader(groupedTransactions[day].date)}
-                        </h3>
-                        
-                        <div className="space-y-2">
-                        {groupedTransactions[day].items.map(transaction => (
-                            <div 
-                                key={transaction.id} 
-                                className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-650 transition-colors"
-                                onClick={() => showTransactionDetails(transaction)}
-                            >
-                                <div className="flex items-center space-x-3 min-w-0 flex-1">
-                                    {getTransactionIcon(transaction.transactionType)}
-                                    <div className="min-w-0 flex-1">
-                                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                            {transaction.description}
-                                        </div>
-                                        <div className="flex text-xs text-gray-500 dark:text-gray-400">
-                                            <span>{new Date(transaction.date).toLocaleTimeString('ru-RU', { 
-                                                hour: '2-digit', 
-                                                minute: '2-digit' 
-                                            })}</span>
-                                            <span className="hidden md:inline-block ml-2">
-                                                · ID: {transaction.id.substring(0, 8)}...
-                                            </span>
+            {transactions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <p>Транзакции не найдены</p>
+                </div>
+            ) : (
+                <>
+                    <div className="flex justify-end">
+                        <CompactPagination />
+                    </div>
+                    
+                    {sortedDays.map(day => (
+                        <div key={day} className="space-y-2">
+                            <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-1 mt-3 first:mt-0">
+                                {formatDayHeader(groupedTransactions[day].date)}
+                            </h3>
+                            
+                            <div className="space-y-2">
+                            {groupedTransactions[day].items.map(transaction => (
+                                <div 
+                                    key={transaction.id} 
+                                    className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-650"
+                                    onClick={() => showTransactionDetails(transaction)}
+                                >
+                                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                                        {getTransactionIcon(transaction.transactionType)}
+                                        <div className="min-w-0 flex-1">
+                                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                {transaction.description}
+                                            </div>
+                                            <div className="flex text-xs text-gray-500 dark:text-gray-400">
+                                                <span>{new Date(transaction.date).toLocaleTimeString('ru-RU', { 
+                                                    hour: '2-digit', 
+                                                    minute: '2-digit' 
+                                                })}</span>
+                                                <span className="hidden md:inline-block ml-2">
+                                                    · ID: {transaction.id}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className={`font-medium whitespace-nowrap ml-2 ${transaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                                        {formatAmount(transaction.sum)}
+                                    </div>
                                 </div>
-                                <div className={`font-medium whitespace-nowrap ml-2 ${transaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
-                                    {formatAmount(transaction.sum)}
-                                </div>
+                            ))}
                             </div>
-                        ))}
                         </div>
-                    </div>
-                ))}
+                    ))}
 
-                <Pagination />
-            </div>
+                    <Pagination />
+                </>
+            )}
             
             <TransactionModal />
         </>
