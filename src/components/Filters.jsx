@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getTypeLabel } from '../utils/getTypeLabel';
 
 function Filters({ transactions, onFilterChange }) {
     const [dateRange, setDateRange] = useState({ from: '', to: '' });
@@ -48,17 +49,6 @@ function Filters({ transactions, onFilterChange }) {
                 ? prev.filter(t => t !== type) 
                 : [...prev, type]
         );
-    };
-
-    const getTypeLabel = (type) => { // вынести
-        switch(type) {
-            case 'autoUp': return 'Автоподнятие';
-            case 'viewing': return 'Просмотр';
-            case 'stick': return 'Закрепление';
-            case 'replenishing': return 'Пополнение';
-            case 'commission': return 'Комиссия';
-            default: return type;
-        }
     };
     
     const handleClearFilters = () => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getTypeLabel } from '../utils/getTypeLabel';
 
 function TransactionsList({ transactions }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -92,17 +93,6 @@ function TransactionsList({ transactions }) {
         });
     };
 
-    const getTransactionTypeLabel = (type) => { // вынести
-        switch(type) {
-            case 'autoUp': return 'Автоподнятие';
-            case 'viewing': return 'Просмотр';
-            case 'stick': return 'Закрепление';
-            case 'replenishing': return 'Пополнение';
-            case 'commission': return 'Комиссия';
-            default: return type;
-        }
-    };
-
     const getTransactionIcon = (type) => {
         switch(type) {
             case 'autoUp':
@@ -159,7 +149,7 @@ function TransactionsList({ transactions }) {
         setIsModalOpen(false);
     };
 
-    const TransactionModal = () => { // вынести
+    const TransactionModal = () => {
         if (!selectedTransaction || !isModalOpen) return null;
         
         return (
@@ -184,7 +174,7 @@ function TransactionsList({ transactions }) {
                             <div className="flex items-center">
                                 {getTransactionIcon(selectedTransaction.transactionType)}
                                 <span className="ml-3 font-medium text-gray-900 dark:text-white">
-                                    {getTransactionTypeLabel(selectedTransaction.transactionType)}
+                                    {getTypeLabel(selectedTransaction.transactionType)}
                                 </span>
                             </div>
                             <div className={`font-medium ${selectedTransaction.sum < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
