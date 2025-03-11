@@ -15,34 +15,11 @@ function Filters({ transactions, onFilterChange }) {
     }, [dateRange, selectedTypes, amountRange]);
     
     const applyFilters = () => {
-        let filtered = [...transactions];
-
-        if (dateRange.from) {
-            const fromDate = new Date(dateRange.from);
-            filtered = filtered.filter(t => new Date(t.date) >= fromDate);
-        }
-        
-        if (dateRange.to) {
-            const toDate = new Date(dateRange.to);
-            toDate.setHours(23, 59, 59, 999);
-            filtered = filtered.filter(t => new Date(t.date) <= toDate);
-        }
-
-        if (selectedTypes.length > 0) {
-            filtered = filtered.filter(t => selectedTypes.includes(t.transactionType));
-        }
-
-        if (amountRange.min !== '') {
-            const min = parseFloat(amountRange.min);
-            filtered = filtered.filter(t => t.sum >= min);
-        }
-        
-        if (amountRange.max !== '') {
-            const max = parseFloat(amountRange.max);
-            filtered = filtered.filter(t => t.sum <= max);
-        }
-
-        onFilterChange(filtered);
+        onFilterChange({
+            dateRange,
+            selectedTypes,
+            amountRange
+        });
     };
 
     const handleTypeToggle = (type) => {
@@ -119,7 +96,7 @@ function Filters({ transactions, onFilterChange }) {
                                 value={amountRange.min}
                                 step={1000}
                                 onChange={e => setAmountRange({...amountRange, min: e.target.value})}
-                                className="w-full h-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-blue-900 focus:border-transparent"
+                                className="w-full h-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent"
                                 placeholder="Минимум"
                             />
                         </div>
@@ -130,7 +107,7 @@ function Filters({ transactions, onFilterChange }) {
                                 value={amountRange.max} 
                                 step={1000}
                                 onChange={e => setAmountRange({...amountRange, max: e.target.value})}
-                                className="w-full h-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-blue-900 focus:border-transparent"
+                                className="w-full h-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 px-3 py-2 rounded focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent"
                                 placeholder="Максимум"
                             />
                         </div>

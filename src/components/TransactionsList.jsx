@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getTypeLabel } from '../utils/getTypeLabel';
 
-function TransactionsList({ transactions }) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(25);
+function TransactionsList({ transactions, currentPage, totalPages, onPageChange }) {
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [inputPage, setInputPage] = useState(currentPage.toString());
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         window.scrollTo({
@@ -14,14 +14,11 @@ function TransactionsList({ transactions }) {
         });
     }, [currentPage]);
 
-    const totalPages = Math.ceil(transactions.length / itemsPerPage);
-    
-    const currentTransactions = transactions.slice(
-        (currentPage - 1) * itemsPerPage, 
-        currentPage * itemsPerPage
-    );
+    useEffect(() => {
+        setInputPage(currentPage.toString());
+    }, [currentPage]);
 
-    const groupedTransactions = currentTransactions.reduce((groups, transaction) => {
+    const groupedTransactions = transactions.reduce((groups, transaction) => {
         const date = new Date(transaction.date);
         const dayKey = new Date(date.getFullYear(), date.getMonth(), date.getDate()).toISOString().split('T')[0];
         
@@ -39,15 +36,19 @@ function TransactionsList({ transactions }) {
     const sortedDays = Object.keys(groupedTransactions).sort((a, b) => b.localeCompare(a));
 
     const goToNextPage = () => {
-        setCurrentPage(page => Math.min(page + 1, totalPages));
+        if (currentPage < totalPages) {
+            onPageChange(currentPage + 1);
+        }
     };
 
     const goToPreviousPage = () => {
-        setCurrentPage(page => Math.max(page - 1, 1));
+        if (currentPage > 1) {
+            onPageChange(currentPage - 1);
+        }
     };
 
     const goToPage = (pageNumber) => {
-        setCurrentPage(pageNumber);
+        onPageChange(pageNumber);
     };
 
     const formatAmount = (amount) => {
@@ -223,9 +224,6 @@ function TransactionsList({ transactions }) {
     };
 
     const CompactPagination = () => {
-        const [inputPage, setInputPage] = useState(currentPage.toString());
-        const [isEditing, setIsEditing] = useState(false);
-        
         if (totalPages <= 1) return null;
         
         const handleInputChange = (e) => {
@@ -386,9 +384,9 @@ function TransactionsList({ transactions }) {
                         <CompactPagination />
                     </div>
                     
-                    {sortedDays.map(day => (
-                        <div key={day} className="space-y-2">
-                            <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-1 mt-3 first:mt-0">
+                    {sortedDays.map((day, index) => (
+                        <div key={day} className={`space-y-2 ${index > 0 ? 'mt-3' : ''}`}>
+                            <h3 className="font-medium text-gray-700 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600 pb-1">
                                 {formatDayHeader(groupedTransactions[day].date)}
                             </h3>
                             

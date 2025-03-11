@@ -91,8 +91,8 @@ const Settings = () => {
       )}
       
       {isOpen && isMobile && (
-        <div className="fixed inset-0 bg-opacity-75 z-50 flex justify-center items-start">
-          <div className="text-xl bg-white dark:bg-gray-800 w-full max-w-lg mx-auto mt-0 rounded-none md:mt-16 md:rounded-lg overflow-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex justify-center items-start">
+          <div className="text-xl bg-white dark:bg-gray-800 w-full max-w-lg mx-auto mt-0 rounded-none md:mt-16 md:rounded-lg overflow-auto shadow-xl">
             {renderContent()}
           </div>
         </div>
