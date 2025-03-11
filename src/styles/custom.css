@@ -7,3 +7,40 @@
     @apply bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent
   }
 }
+
+.dark .antd-dark-theme .ant-picker-panel {
+  @apply bg-gray-700 text-gray-100;
+}
+
+.dark .antd-dark-theme .ant-picker-ranges {
+  @apply bg-gray-700 text-gray-100;
+}
+
+.dark .antd-dark-theme .ant-picker-header,
+.dark .antd-dark-theme .ant-picker-header button,
+.dark .antd-dark-theme .ant-picker-cell,
+.dark .antd-dark-theme th {
+  @apply text-gray-300;
+}
+
+.dark .antd-dark-theme .ant-picker-cell:hover .ant-picker-cell-inner {
+  @apply bg-gray-700;
+}
+
+.dark .antd-dark-theme .ant-picker-cell-in-view {
+  @apply text-gray-100;
+}
+
+.dark .ant-picker input::placeholder {
+  @apply text-gray-400;
+}
+
+.dark .ant-picker .ant-picker-suffix,
+.dark .ant-picker .ant-picker-clear {
+  @apply text-gray-400;
+}
+
+.dark .ant-picker:hover .ant-picker-suffix svg,
+.dark .ant-picker:hover .ant-picker-clear svg {
+  @apply text-gray-400;
+}
