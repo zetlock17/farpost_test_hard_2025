@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filters from "./Filters";
 import TransactionsList from "./TransactionsList";
 import transactionsData from '../data/transactions.json';
+import TransactionsChart from './TransactionsChart';
 
 function Transactions() {
     const [transactions, setTransactions] = useState([]);
@@ -38,6 +39,7 @@ function Transactions() {
                 </div>
             ) : (
                 <>
+                    <TransactionsChart transactions={transactions} />
                     <Filters 
                         transactions={transactions} 
                         onFilterChange={handleFilterChange} 
