@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Filters from "./Filters";
 import TransactionsList from "./TransactionsList";
-import transactionsData from '../data/transactions.json';
+import apiClient from '../services/api';
 
 function Transactions() {
     const [transactions, setTransactions] = useState([]);
@@ -10,15 +10,25 @@ function Transactions() {
     const [itemsPerPage] = useState(25);
     const [loading, setLoading] = useState(true);
     const [totalFilteredItems, setTotalFilteredItems] = useState(0);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setTransactions(transactionsData);
-            setFilteredTransactions([]);
-            setLoading(false);
-        }, 300);
-        
-        return () => clearTimeout(timer);
+        const fetchTransactions = async () => {
+            try {
+                setLoading(true);
+                const response = await apiClient.get('/transactions');
+                setTransactions(response.data);
+                setFilteredTransactions([]);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching transactions:', err);
+                setError('Не удалось загрузить транзакции');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTransactions();
     }, []);
 
     useEffect(() => {
@@ -83,6 +93,14 @@ function Transactions() {
         return (
             <div className="flex justify-center items-center h-32">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-8 text-red-500 dark:text-red-400">
+                <p>{error}</p>
             </div>
         );
     }

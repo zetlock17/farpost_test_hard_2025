@@ -154,7 +154,7 @@ function TransactionsList({ transactions, currentPage, totalPages, onPageChange 
         if (!selectedTransaction || !isModalOpen) return null;
         
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-auto">
                     <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
@@ -394,7 +394,7 @@ function TransactionsList({ transactions, currentPage, totalPages, onPageChange 
                             {groupedTransactions[day].items.map(transaction => (
                                 <div 
                                     key={transaction.id} 
-                                    className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-650"
+                                    className="bg-white dark:bg-gray-700 rounded-lg shadow p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
                                     onClick={() => showTransactionDetails(transaction)}
                                 >
                                     <div className="flex items-center space-x-3 min-w-0 flex-1">
