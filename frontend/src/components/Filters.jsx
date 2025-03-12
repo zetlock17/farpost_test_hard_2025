@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 
 function Filters({ transactions, onFilterChange }) {
     const [dateRange, setDateRange] = useState({ from: '', to: '' });
-    const [selectedTypes, setSelectedTypes] = useState([]);
     const [amountRange, setAmountRange] = useState({ min: '', max: '' });
+    const [selectedTypes, setSelectedTypes] = useState([]);
 
     const transactionTypes = [...new Set(transactions.map(t => t.transactionType))];
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filters from "./Filters";
 import TransactionsList from "./TransactionsList";
 import apiClient from '../services/api';
+import Loading from './Loading';
 
 function Transactions() {
     const [transactions, setTransactions] = useState([]);
@@ -11,6 +12,7 @@ function Transactions() {
     const [loading, setLoading] = useState(true);
     const [totalFilteredItems, setTotalFilteredItems] = useState(0);
     const [error, setError] = useState(null);
+    const [currentFilters, setCurrentFilters] = useState(null);
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -33,9 +35,9 @@ function Transactions() {
 
     useEffect(() => {
         if (transactions.length > 0) {
-            applyFiltersWithPagination();
+            applyFiltersWithPagination(currentFilters);
         }
-    }, [currentPage, transactions]);
+    }, [currentPage, transactions, currentFilters]);
 
     const applyFiltersWithPagination = (filters = null) => {
         setLoading(true);
@@ -82,6 +84,7 @@ function Transactions() {
 
     const handleFilterChange = (filters) => {
         setCurrentPage(1);
+        setCurrentFilters(filters);
         applyFiltersWithPagination(filters);
     };
 
@@ -91,17 +94,13 @@ function Transactions() {
 
     if (loading && transactions.length === 0) {
         return (
-            <div className="flex justify-center items-center h-32">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
+            <Loading />
         );
     }
 
     if (error) {
         return (
-            <div className="text-center py-8 text-red-500 dark:text-red-400">
-                <p>{error}</p>
-            </div>
+            <Error error={error} />
         );
     }
 
@@ -118,9 +117,7 @@ function Transactions() {
                         onFilterChange={handleFilterChange} 
                     />
                     {loading ? (
-                        <div className="flex justify-center items-center h-32">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
+                        <Loading />
                     ) : (
                         <TransactionsList 
                             transactions={filteredTransactions}

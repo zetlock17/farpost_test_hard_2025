@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
-const ThemeToggle = () => {
+function ThemeToggle() {
     const { isDarkMode, toggleTheme } = useTheme();
 
     return (

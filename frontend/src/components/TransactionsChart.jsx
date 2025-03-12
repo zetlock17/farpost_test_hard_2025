@@ -38,7 +38,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const TransactionsChart = ({ transactions }) => {
+function TransactionsChart({ transactions }) {
     const chartData = useMemo(() => {
         const expenses = transactions.filter(t => t.sum < 0);
         console.log(expenses);

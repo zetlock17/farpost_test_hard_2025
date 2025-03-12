@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
 
-const Settings = () => {
+function Settings() {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
