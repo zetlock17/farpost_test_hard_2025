@@ -20,7 +20,8 @@
      
 ## ⚙️ Технологии  
 
-- **React** + **TailwindCSS**  
+- **React** + **TailwindCSS**
+- **Fastapi**
 - **Ant Design (`antd`)**  
 - **Docker**  
 
